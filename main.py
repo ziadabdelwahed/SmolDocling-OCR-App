@@ -15,9 +15,29 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 
 # Import for Transformers approach
 try:
-    from transformers import AutoProcessor, AutoModelForVision2Seq
+    import transformers
+    st.write(f"Transformers version: {transformers.__version__}")
+
+    from transformers import AutoProcessor
+
+    MODEL_CLASS = None
+
+    try:
+        from transformers import AutoModelForVision2Seq
+        MODEL_CLASS = AutoModelForVision2Seq
+        st.write("Using AutoModelForVision2Seq")
+    except Exception:
+        try:
+            from transformers import AutoModelForImageTextToText
+            MODEL_CLASS = AutoModelForImageTextToText
+            st.write("Using AutoModelForImageTextToText")
+        except Exception as inner_e:
+            st.error(f"No compatible vision model class found: {inner_e}")
+
     from huggingface_hub import login
-    transformers_available = True
+
+    transformers_available = MODEL_CLASS is not None
+
 except Exception as e:
     st.error(f"Import error: {e}")
     transformers_available = False
