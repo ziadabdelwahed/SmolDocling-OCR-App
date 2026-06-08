@@ -18,7 +18,8 @@ try:
     from transformers import AutoProcessor, AutoModelForVision2Seq
     from huggingface_hub import login
     transformers_available = True
-except ImportError:
+except Exception as e:
+    st.error(f"Import error: {e}")
     transformers_available = False
 
 try:
